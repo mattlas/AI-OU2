@@ -1,5 +1,10 @@
 import sys
 
+# 1: Happy
+# 2: Sad
+# 3: Mischievous
+# 4: Angry
+
 def readFile(filename):
     with open(filename) as f:
         data = f.readlines()
