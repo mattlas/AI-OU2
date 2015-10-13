@@ -10,12 +10,12 @@ def readFile(filename):
         data = f.readlines()
 
     array = []
-
-
     for lines in data:
         if not (lines.startswith('#')):
             array.append(lines.strip('\n'))
+
     del array[0]
+    print array
     return array
 
 
