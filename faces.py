@@ -1,7 +1,6 @@
 import sys,random
 
 # 1: Happy 2: Sad 3: Mischievous 4: Angry
-
 moods = 4
 
 def readData(filename):
@@ -118,7 +117,7 @@ def train(images,facit, weights):
     avgError = 0
     alpha = 0.1
     for mood in range(0,moods):
-        w = weights[mood]
+        w = list(weights[mood])
         errorSum = 0
         for image in range(0, len(images)):
 
@@ -152,21 +151,66 @@ def train(images,facit, weights):
 
         weights[mood] = w
         avgError += errorSum
-        avgError = avgError
     return weights, avgError
 
+def test(images, weights):
+    results = []
+    nodeValue = 0
+    for image in images:
+        result = []
+        for mood in range(moods):
+            i = 0
+            for row in image:
+                for value in row:
+                    nodeValue += value * weights[mood][i]
+                    i += 1
+
+            if(nodeValue > 0):
+                nodeValue = 1
+            else:
+                nodeValue = -1
+
+            result.append(nodeValue)
+
+        index = result.index(max(result)) + 1
+        results.append(index)
+    return results
+
+def printResult(result):
+    for i in range(len(result)):
+        print("Image" + str(i+1) + " " + str(result[i]))
+
 if __name__ == '__main__':
-    print 'Number of arguments:', len(sys.argv), 'arguments.'
-    print 'Argument List:', str(sys.argv)
+    #print 'Number of arguments:', len(sys.argv), 'arguments.'
+    #print 'Argument List:', str(sys.argv)
 
-    training_filename = sys.argv[1]
+    training_images_filename = sys.argv[1]
     training_facit_filename = sys.argv[2]
+    test_images_filename = sys.argv[3]
 
-    training_array = readImage(training_filename)
-    facit_array = readData(training_facit_filename)
+    training_images = readImage(training_images_filename)
+    training_facit = readData(training_facit_filename)
+    test_images = readImage(test_images_filename)
+
+    #test_facit_filename = sys.argv[4]
+    #test_facit = readData(test_facit_filename)
 
     weights = generateWeights()
+    #weights = [[0] * 400] * 4
 
     for i in range(0, 10):
-        weights, avgError = train(training_array,facit_array, weights)
-        #print(avgError)
+        weights, error = train(training_images,training_facit, weights)
+        #print("Error: " + str(error))
+
+    result = test(test_images, weights)
+
+    printResult(result)
+
+    """test_facit_filename = sys.argv[4]
+    test_facit = readData(test_facit_filename)
+
+    correct = 0
+    for i in range(len(result)):
+        if(result[i] == test_facit[i]):
+            correct += 1
+    print("\n" + str(correct) + " correct answers.")"""
