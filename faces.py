@@ -3,18 +3,6 @@ import sys,random
 # 1: Happy 2: Sad 3: Mischievous 4: Angry
 moods = 4
 
-def readData(filename):
-    dataFile = open(filename, "r")
-
-    array = []
-    for lines in dataFile:
-        if (lines.startswith('#') == False and lines.startswith('Image')):
-            values = lines.split(' ')
-            array.append(int(values[1]))
-
-    dataFile.close()
-    return array
-
 def readImage(filename):
     imageFile = open(filename, "r")
     images = []
@@ -38,6 +26,18 @@ def readImage(filename):
 
     imageFile.close()
     return images
+
+def readData(filename):
+    dataFile = open(filename, "r")
+
+    array = []
+    for lines in dataFile:
+        if (lines.startswith('#') == False and lines.startswith('Image')):
+            values = lines.split(' ')
+            array.append(int(values[1]))
+
+    dataFile.close()
+    return array
 
 def rotateImage(image):
     topSum = bottomSum = leftSum = rightSum = 0;
@@ -83,25 +83,6 @@ def rotate(image):
         rotatedImage.append(rotated)
     return rotatedImage
 
-def pprint(images):
-    i = 1
-    for image in images:
-        print "Image " + str(i)
-        for row in image:
-            print row
-        print ""
-        i = i + 1
-
-    return
-
-def printFacit(facit):
-    i = 1
-    for ans in facit:
-        print "Answer " + str(i) + ": " + str(ans)
-        print ""
-        i = i + 1
-    return
-
 def generateWeights():
     weights = []
     for i in range(0,moods):
@@ -124,9 +105,9 @@ def train(images,facit, weights):
             nodeValue = 0
 
             if(facit[image] == mood + 1):
-                desiredOutput = 1
+                desiredValue = 1
             else:
-                desiredOutput = -1
+                desiredValue = -1
 
             i = 0
             for row in images[image]:
@@ -139,7 +120,7 @@ def train(images,facit, weights):
             else:
                 nodeValue = -1
 
-            error = desiredOutput - nodeValue
+            error = desiredValue - nodeValue
             errorSum += abs(error)
 
             i = 0
@@ -175,6 +156,25 @@ def test(images, weights):
         index = result.index(max(result)) + 1
         results.append(index)
     return results
+
+def pprint(images):
+    i = 1
+    for image in images:
+        print "Image " + str(i)
+        for row in image:
+            print row
+        print ""
+        i = i + 1
+
+    return
+
+def printFacit(facit):
+    i = 1
+    for ans in facit:
+        print "Answer " + str(i) + ": " + str(ans)
+        print ""
+        i = i + 1
+    return
 
 def printResult(result):
     for i in range(len(result)):
